@@ -1,6 +1,6 @@
 {
   "name": "fi1a/package-config",
-  "type": "library",
+  "type": "composer-plugin",
   "description": "Управление конфигурацией пакетов",
   "keywords": [],
   "homepage": "https://github.com/fi1a/package-config",
@@ -12,7 +12,9 @@
     }
   ],
   "require": {
-    "php": "^7.3 || ^8"
+    "php": "^7.3 || ^8",
+    "composer-plugin-api": "^2.0",
+    "fi1a/config": "^2.1"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3",
@@ -38,9 +40,9 @@
     }
   },
   "scripts": {
-    "fl:lint": "phpcs --cache=build/cache/phpcs.cache",
-    "fl:phpcbf": "phpcbf --cache=build/cache/phpcbf.cache",
-    "fl:test:unit:coverage:ci": "phpunit --coverage-clover build/logs/clover.xml",
+    "fl:lint": "phpcs --cache=runtime/cache/phpcs.cache",
+    "fl:phpcbf": "phpcbf --cache=runtime/cache/phpcbf.cache",
+    "fl:test:unit:coverage:ci": "phpunit --coverage-clover runtime/logs/clover.xml",
     "fl:test:unit": "phpunit",
     "fl:psalm": "psalm",
     "fl:check": [
