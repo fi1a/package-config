@@ -18,6 +18,7 @@
     "fi1a/config": "^2.1"
   },
   "require-dev": {
+    "ext-json": "*",
     "captainhook/captainhook": "^5.4",
     "composer/composer": "^2.0",
     "phpunit/phpunit": "^9.3",

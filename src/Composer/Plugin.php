@@ -14,12 +14,8 @@ use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
 use Fi1a\PackageConfig\Composer\Command\CommandProvider;
 
-use const PHP_EOL;
-
 /**
  * Плагин
- *
- * @codeCoverageIgnore
  */
 class Plugin implements PluginInterface, EventSubscriberInterface, Capable
 {
@@ -68,8 +64,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface, Capable
      */
     public function onInstall(Event $event): void
     {
-        echo 'onInstall' . PHP_EOL;
-        //$this->processConfigs($event->getComposer());
+        $this->process($event->getComposer());
     }
 
     /**
@@ -77,7 +72,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface, Capable
      */
     public function onUpdate(Event $event): void
     {
-        echo 'onUpdate' . PHP_EOL;
-        //$this->processConfigs($event->getComposer());
+        $this->process($event->getComposer());
+    }
+
+    protected function process(Composer $composer): void
+    {
     }
 }
