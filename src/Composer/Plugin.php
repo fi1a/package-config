@@ -13,6 +13,7 @@ use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
 use Fi1a\PackageConfig\Composer\Commands\CommandProvider;
+use Fi1a\PackageConfig\StorageAdapters\StorageAdapterInterface;
 
 /**
  * Плагин
@@ -80,7 +81,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface, Capable
      */
     protected function process(Composer $composer): void
     {
+        /** @var StorageAdapterInterface $adapter */
+        $adapter = di()->get(StorageAdapterInterface::class);
         $process = new Process($composer);
-        $process->process();
+        $adapter->write($process->process()->toArray());
     }
 }

@@ -79,6 +79,29 @@ class Map implements MapInterface
     /**
      * @inheritDoc
      */
+    public function toArray(): array
+    {
+        $map = [];
+        /**
+         * @var string $group
+         * @var FileCollectionInterface $files
+         */
+        foreach ($this->groups as $group => $files) {
+            /** @var FileInterface $file */
+            foreach ($files as $file) {
+                $map[] = [
+                    'group' => $group,
+                    'path' => $file->getPath(),
+                ];
+            }
+        }
+
+        return $map;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public static function createFromArray(array $map): MapInterface
     {
         $instance = new Map();

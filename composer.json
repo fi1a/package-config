@@ -13,13 +13,14 @@
   ],
   "require": {
     "php": "^7.3 || ^8",
+    "ext-json": "*",
     "composer-plugin-api": "^2.0",
     "fi1a/collection": "^2.0",
     "fi1a/config": "^2.1",
-    "fi1a/filesystem": "^1.0"
+    "fi1a/filesystem": "^1.0",
+    "fi1a/dependency-injection": "^1.0"
   },
   "require-dev": {
-    "ext-json": "*",
     "captainhook/captainhook": "^5.4",
     "composer/composer": "^2.0",
     "phpunit/phpunit": "^9.3",
@@ -37,7 +38,10 @@
   "autoload": {
     "psr-4": {
       "Fi1a\\PackageConfig\\": "src"
-    }
+    },
+    "files": [
+      "src/configure.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {

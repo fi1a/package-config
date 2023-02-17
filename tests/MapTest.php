@@ -77,4 +77,35 @@ class MapTest extends TestCase
         $this->assertCount(1, $map->getGroup('fi1a/bar'));
         $this->assertCount(0, $map->getGroup('notExists'));
     }
+
+    /**
+     * Файлы конфигурации в массив
+     */
+    public function testToArray(): void
+    {
+        $map = new Map();
+
+        $this->assertTrue($map->add('web', 'vendor/fi1a/foo/configs/web.php'));
+        $this->assertTrue($map->add('web', 'vendor/fi1a/foo/configs/web2.php'));
+        $this->assertTrue($map->add('fi1a/bar', new File('vendor/fi1a/bar/configs/package.php')));
+
+        $this->assertCount(3, $map->toArray());
+        $this->assertEquals(
+            [
+                [
+                    'group' => 'web',
+                    'path' => 'vendor/fi1a/foo/configs/web.php',
+                ],
+                [
+                    'group' => 'web',
+                    'path' => 'vendor/fi1a/foo/configs/web2.php',
+                ],
+                [
+                    'group' => 'fi1a/bar',
+                    'path' => 'vendor/fi1a/bar/configs/package.php',
+                ],
+            ],
+            $map->toArray()
+        );
+    }
 }

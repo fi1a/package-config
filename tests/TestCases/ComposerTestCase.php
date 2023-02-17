@@ -20,6 +20,7 @@ use Composer\Semver\Constraint\Constraint;
 use Fi1a\Filesystem\Adapters\LocalAdapter;
 use Fi1a\Filesystem\Filesystem;
 use Fi1a\Filesystem\NodeInterface;
+use Fi1a\PackageConfig\StorageAdapters\StorageAdapterInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -101,8 +102,8 @@ class ComposerTestCase extends TestCase
         $extra = [
             'package-config' => [
                 'web' => 'web.php',
-                'dublicate1' => 'dublicate.php',
-                'dublicate2' => 'dublicate.php',
+                'duplicate1' => 'duplicate.php',
+                'duplicate2' => 'duplicate.php',
             ],
         ];
 
@@ -223,6 +224,35 @@ class ComposerTestCase extends TestCase
      */
     protected function assertMapFile(): void
     {
-        $this->assertTrue(true);
+        /** @var StorageAdapterInterface $adapter */
+        $adapter = di()->get(StorageAdapterInterface::class);
+        $map = $adapter->read();
+
+        $this->assertEquals([
+            [
+                'group' => 'web',
+                'path' => 'configs/web.php',
+            ],
+            [
+                'group' => 'web',
+                'path' => 'vendor/foo/bar/configs/web.php',
+            ],
+            [
+                'group' => 'duplicate1',
+                'path' => 'configs/duplicate.php',
+            ],
+            [
+                'group' => 'duplicate1',
+                'path' => 'vendor/foo/bar/configs/duplicate.php',
+            ],
+            [
+                'group' => 'params',
+                'path' => 'configs/foo/bar/params.php',
+            ],
+            [
+                'group' => 'foo/dev',
+                'path' => 'vendor/foo/dev/configs/package.php',
+            ],
+        ], $map);
     }
 }

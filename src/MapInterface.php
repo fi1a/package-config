@@ -29,6 +29,13 @@ interface MapInterface
     public function addArray(array $map): bool;
 
     /**
+     * Файлы конфигурации в массив
+     *
+     * @return list<array{group: string, path: string}>
+     */
+    public function toArray(): array;
+
+    /**
      * Инициализация из массива
      *
      * @param list<array{group: string, path: string}> $map
