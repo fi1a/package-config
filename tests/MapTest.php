@@ -58,7 +58,7 @@ class MapTest extends TestCase
      */
     public function testFromArray(): void
     {
-        $map = Map::fromArray([
+        $map = Map::createFromArray([
             [
                 'group' => 'web',
                 'path' => 'vendor/fi1a/foo/configs/web.php',

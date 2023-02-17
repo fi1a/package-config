@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fi1a\Unit\PackageConfig\Composer\Command;
+namespace Fi1a\Unit\PackageConfig\Composer\Commands;
 
-use Fi1a\PackageConfig\Composer\Command\CommandProvider;
+use Fi1a\PackageConfig\Composer\Commands\CommandProvider;
 use PHPUnit\Framework\TestCase;
 
 /**

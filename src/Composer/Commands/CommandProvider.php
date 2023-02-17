@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fi1a\PackageConfig\Composer\Command;
+namespace Fi1a\PackageConfig\Composer\Commands;
 
 use Composer\Plugin\Capability\CommandProvider as ComposerCommandProvider;
 

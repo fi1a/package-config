@@ -12,7 +12,7 @@ use Composer\Plugin\Capable;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
-use Fi1a\PackageConfig\Composer\Command\CommandProvider;
+use Fi1a\PackageConfig\Composer\Commands\CommandProvider;
 
 /**
  * Плагин
@@ -75,7 +75,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface, Capable
         $this->process($event->getComposer());
     }
 
+    /**
+     * Процесс создания карты файлов конфигурации
+     */
     protected function process(Composer $composer): void
     {
+        $process = new Process($composer);
+        $process->process();
     }
 }

@@ -11,15 +11,17 @@ use Composer\IO\IOInterface;
 use Composer\Installer\InstallationManager;
 use Composer\Package\CompletePackage;
 use Composer\Package\Link;
+use Composer\Package\Package;
 use Composer\Package\PackageInterface;
 use Composer\Package\RootPackageInterface;
 use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Repository\RepositoryManager;
 use Composer\Semver\Constraint\Constraint;
+use Fi1a\Filesystem\Adapters\LocalAdapter;
+use Fi1a\Filesystem\Filesystem;
+use Fi1a\Filesystem\NodeInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -33,12 +35,14 @@ class ComposerTestCase extends TestCase
     /**
      * @var string
      */
-    protected $tempDirectory;
+    protected $testDirectory;
 
     /**
      * @var string
      */
-    protected $tempConfigDirectory;
+    protected $configDirectory;
+
+    protected $filesystem;
 
     /**
      * @inheritDoc
@@ -47,9 +51,11 @@ class ComposerTestCase extends TestCase
     {
         parent::__construct($name, $data, $dataName);
 
-        $this->packagesDirectory = __DIR__ . '/../Fixtures/packages';
-        $this->tempDirectory = __DIR__ . '/../../runtime/tests';
-        $this->tempConfigDirectory = "$this->tempDirectory/config";
+        $this->packagesDirectory = realpath(__DIR__ . '/../Fixtures/packages/vendor');
+        $this->testDirectory =  realpath(__DIR__ . '/../../runtime/tests');
+        $this->configDirectory = $this->testDirectory . '/config';
+
+        $this->filesystem = new Filesystem(new LocalAdapter(__DIR__ . '/../..'));
     }
 
     /**
@@ -63,27 +69,23 @@ class ComposerTestCase extends TestCase
 
     protected function setUp(): void
     {
-        mkdir($this->tempConfigDirectory);
-        putenv("COMPOSER=$this->tempDirectory/composer.json");
+        $this->filesystem->factoryFolder($this->configDirectory)->make();
+        $this->filesystem->factoryFolder(__DIR__ . '/../Fixtures/packages')
+            ->copy(__DIR__ . '/../../runtime/tests');
+        putenv("COMPOSER=$this->testDirectory/composer.json");
+
         parent::setUp();
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
-        $directoryIterator = new RecursiveDirectoryIterator(
-            $this->tempDirectory,
-            RecursiveDirectoryIterator::SKIP_DOTS
-        );
-        $filesIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
-        foreach ($filesIterator as $file) {
-            if ($file->isDir()) {
-                rmdir($file->getRealPath());
-
+        /** @var NodeInterface $node */
+        foreach ($this->filesystem->factoryFolder($this->testDirectory)->all() as $node) {
+            if ($node->getName() === '.gitkeep') {
                 continue;
             }
-
-            unlink($file->getRealPath());
+            $node->delete();
         }
     }
 
@@ -92,90 +94,107 @@ class ComposerTestCase extends TestCase
      */
     protected function getComposerMock()
     {
-        $rootPath = $this->tempDirectory;
+        $rootPath = $this->testDirectory;
         $sourcePath = $this->packagesDirectory;
-        $targetPath = "$this->tempDirectory/vendor";
+        $targetPath = $this->testDirectory . '/vendor';
 
-        $extra = [];
+        $extra = [
+            'package-config' => [
+                'web' => 'web.php',
+                'dublicate1' => 'dublicate.php',
+                'dublicate2' => 'dublicate.php',
+            ],
+        ];
 
         $config = $this->createMock(Config::class);
-        $config
-            ->method('get')
-            ->willReturn(dirname(__DIR__, 2) . '/vendor');
+        $config->method('get')
+            ->willReturn($targetPath);
 
-        $rootPackage = $this
-            ->getMockBuilder(RootPackageInterface::class)
-            ->onlyMethods(['getRequires', 'getDevRequires', 'getExtra'])
+        $rootPackage = $this->getMockBuilder(RootPackageInterface::class)
+            ->onlyMethods(['getRequires', 'getDevRequires', 'getExtra', 'getName'])
             ->getMockForAbstractClass();
-        $rootPackage
-            ->method('getRequires')
+        $rootPackage->method('getRequires')
             ->willReturn([
-                'foo/bar' => new Link("$sourcePath/foo/bar", "$targetPath/foo/bar", new Constraint('>=', '1.0.0')),
+                'foo/bar' => new Link(
+                    $sourcePath . '/foo/bar',
+                    $targetPath . '/foo/bar',
+                    new Constraint('>=', '1.0.0')
+                ),
+                'foo/baz' => new Link(
+                    $sourcePath . '/foo/baz',
+                    $targetPath . '/foo/baz',
+                    new Constraint('>=', '1.0.0')
+                ),
+                'foo/qux' => new Link(
+                    $sourcePath . '/foo/qux',
+                    $targetPath . '/foo/qux',
+                    new Constraint('>=', '1.0.0')
+                ),
             ]);
-        $rootPackage
-            ->method('getDevRequires')
+        $rootPackage->method('getDevRequires')
             ->willReturn([
-                'foo/dev' => new Link("$sourcePath/foo/dev", "$targetPath/foo/dev", new Constraint('>=', '1.0.0')),
+                'foo/dev' => new Link(
+                    $sourcePath . '/foo/dev',
+                    $targetPath . '/foo/dev',
+                    new Constraint('>=', '1.0.0')
+                ),
             ]);
-        $rootPackage
-            ->method('getExtra')
+        $rootPackage->method('getExtra')
             ->willReturn($extra);
+        $rootPackage->method('getName')
+            ->willReturn('foo/root');
 
         $packages = [
             new CompletePackage('foo/bar', '1.0.0', '1.0.0'),
             new CompletePackage('foo/dev', '1.0.0', '1.0.0'),
+            new CompletePackage('foo/qux', '1.0.0', '1.0.0'),
+            new Package('foo/baz', '1.0.0', '1.0.0'),
         ];
 
         foreach ($packages as $package) {
-            $path = "$sourcePath/{$package->getName()}" . '/composer.json';
-            $package->setExtra(json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR)['extra']);
+            $path = $sourcePath . '/' . $package->getName() . '/composer.json';
+            if (is_file($path)) {
+                $package->setExtra(json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR)['extra']);
+            }
         }
 
-        $repository = $this
-            ->getMockBuilder(InstalledRepositoryInterface::class)
+        $repository = $this->getMockBuilder(InstalledRepositoryInterface::class)
             ->onlyMethods(['getPackages'])
             ->getMockForAbstractClass();
         $repository
             ->method('getPackages')
             ->willReturn($packages);
 
-        $repositoryManager = $this
-            ->getMockBuilder(RepositoryManager::class)
+        $repositoryManager = $this->getMockBuilder(RepositoryManager::class)
             ->onlyMethods(['getLocalRepository'])
             ->disableOriginalConstructor()
             ->getMock();
-        $repositoryManager
-            ->method('getLocalRepository')
+        $repositoryManager->method('getLocalRepository')
             ->willReturn($repository);
 
-        $installationManager = $this
-            ->getMockBuilder(InstallationManager::class)
+        $installationManager = $this->getMockBuilder(InstallationManager::class)
             ->onlyMethods(['getInstallPath'])
             ->disableOriginalConstructor()
             ->getMock();
-        $installationManager
-            ->method('getInstallPath')
+        $installationManager->method('getInstallPath')
             ->willReturnCallback(
-                static function (PackageInterface $package) use ($sourcePath, $rootPath) {
+                static function (PackageInterface $package) use ($targetPath, $rootPath) {
                     if ($package instanceof RootPackageInterface) {
                         return $rootPath;
                     }
 
-                    return str_replace('test/', '', "$sourcePath/{$package->getName()}");
+                    return $targetPath . '/' . $package->getName();
                 }
             );
 
-        $eventDispatcher = $this
-            ->getMockBuilder(EventDispatcher::class)
+        $eventDispatcher = $this->getMockBuilder(EventDispatcher::class)
             ->onlyMethods(['dispatch'])
             ->disableOriginalConstructor()
             ->getMock();
-        $eventDispatcher
-            ->method('dispatch')
+        $eventDispatcher->method('dispatch')
             ->willReturn(0);
 
-        $composer = $this
-            ->getMockBuilder(Composer::class)
+        $composer = $this->getMockBuilder(Composer::class)
             ->onlyMethods([
                 'getConfig',
                 'getPackage',
@@ -185,20 +204,15 @@ class ComposerTestCase extends TestCase
             ])
             ->getMock();
 
-        $composer
-            ->method('getConfig')
+        $composer->method('getConfig')
             ->willReturn($config);
-        $composer
-            ->method('getPackage')
+        $composer->method('getPackage')
             ->willReturn($rootPackage);
-        $composer
-            ->method('getRepositoryManager')
+        $composer->method('getRepositoryManager')
             ->willReturn($repositoryManager);
-        $composer
-            ->method('getInstallationManager')
+        $composer->method('getInstallationManager')
             ->willReturn($installationManager);
-        $composer
-            ->method('getEventDispatcher')
+        $composer->method('getEventDispatcher')
             ->willReturn($eventDispatcher);
 
         return $composer;

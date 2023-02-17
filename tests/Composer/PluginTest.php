@@ -7,7 +7,7 @@ namespace Fi1a\Unit\PackageConfig\Composer;
 use Composer\Plugin\Capability\CommandProvider as ComposerCommandProvider;
 use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
-use Fi1a\PackageConfig\Composer\Command\CommandProvider;
+use Fi1a\PackageConfig\Composer\Commands\CommandProvider;
 use Fi1a\PackageConfig\Composer\Plugin;
 use Fi1a\Unit\PackageConfig\TestCases\ComposerTestCase;
 

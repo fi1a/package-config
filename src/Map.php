@@ -67,12 +67,22 @@ class Map implements MapInterface
     /**
      * @inheritDoc
      */
-    public static function fromArray(array $map): MapInterface
+    public function addArray(array $map): bool
+    {
+        foreach ($map as $item) {
+            $this->add($item['group'] ?? '', $item['path'] ?? '');
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function createFromArray(array $map): MapInterface
     {
         $instance = new Map();
-        foreach ($map as $item) {
-            $instance->add($item['group'] ?: '', $item['path'] ?: '');
-        }
+        $instance->addArray($map);
 
         return $instance;
     }
