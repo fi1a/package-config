@@ -4,23 +4,14 @@ declare(strict_types=1);
 
 namespace Fi1a\Unit\PackageConfig\StorageAdapters;
 
-use Fi1a\Filesystem\Adapters\LocalAdapter;
-use Fi1a\Filesystem\Filesystem;
 use Fi1a\PackageConfig\StorageAdapters\LocalFilesystemStorageAdapter;
-use PHPUnit\Framework\TestCase;
+use Fi1a\Unit\PackageConfig\TestCases\ComposerTestCase;
 
 /**
  * Адаптер хранения карты конфигурационных файлов в локальной файловой системе
  */
-class LocalFilesystemStorageAdapterTest extends TestCase
+class LocalFilesystemStorageAdapterTest extends ComposerTestCase
 {
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $filesystem = new Filesystem(new LocalAdapter(__DIR__ . '/../../runtime/tests'));
-        $filesystem->factoryFile('./.map.json')->delete();
-    }
-
     /**
      * Чтение и запись
      */

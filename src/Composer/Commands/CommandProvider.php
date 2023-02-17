@@ -16,6 +16,8 @@ class CommandProvider implements ComposerCommandProvider
      */
     public function getCommands(): array
     {
-        return [];
+        return [
+            new RebuildCommand(),
+        ];
     }
 }

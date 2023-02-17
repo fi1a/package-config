@@ -18,6 +18,6 @@ class CommandProviderTest extends TestCase
     public function testGetCommands(): void
     {
         $command = new CommandProvider();
-        $this->assertEquals([], $command->getCommands());
+        $this->assertCount(1, $command->getCommands());
     }
 }

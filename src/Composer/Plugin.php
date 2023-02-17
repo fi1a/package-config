@@ -36,6 +36,15 @@ class Plugin implements PluginInterface, EventSubscriberInterface, Capable
      */
     public function activate(Composer $composer, IOInterface $io)
     {
+        $autoloadPath = (string) $composer->getConfig()->get('vendor-dir') . '/autoload.php';
+        if (is_file($autoloadPath)) {
+            /**
+             * @psalm-suppress UnresolvableInclude
+             * @psalm-suppress PossiblyNullReference
+             */
+            require_once $autoloadPath;
+            require_once __DIR__ . '/../configure.php';
+        }
     }
 
     /**
