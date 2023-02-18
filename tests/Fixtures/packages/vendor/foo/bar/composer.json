@@ -1,0 +1,14 @@
+{
+  "name": "foo/bar",
+  "version": "1.0.0",
+  "extra": {
+    "package-config": {
+      "params": "params.php",
+      "web": "web.php",
+      "duplicate1": "duplicate.php",
+      "duplicate2": "duplicate.php",
+      "": "empty-group.php",
+      "empty-file": ""
+    }
+  }
+}
