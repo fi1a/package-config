@@ -41,7 +41,8 @@
       "Fi1a\\PackageConfig\\": "src"
     },
     "files": [
-      "src/configure.php"
+      "src/configure.php",
+      "src/helpers.php"
     ]
   },
   "autoload-dev": {

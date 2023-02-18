@@ -94,6 +94,7 @@ class ComposerTestCase extends TestCase
 
         $extra = [
             'package-config' => [
+                'params' => 'params.php',
                 'web' => 'web.php',
                 'duplicate1' => 'duplicate.php',
                 'duplicate2' => 'duplicate.php',
@@ -223,6 +224,14 @@ class ComposerTestCase extends TestCase
 
         $this->assertEquals([
             [
+                'group' => 'params',
+                'path' => 'configs/params.php',
+            ],
+            [
+                'group' => 'params',
+                'path' => 'configs/foo/bar/params.php',
+            ],
+            [
                 'group' => 'web',
                 'path' => 'configs/web.php',
             ],
@@ -237,10 +246,6 @@ class ComposerTestCase extends TestCase
             [
                 'group' => 'duplicate1',
                 'path' => 'vendor/foo/bar/configs/duplicate.php',
-            ],
-            [
-                'group' => 'params',
-                'path' => 'configs/foo/bar/params.php',
             ],
             [
                 'group' => 'foo/dev',
@@ -260,6 +265,14 @@ class ComposerTestCase extends TestCase
 
         $this->assertEquals([
             [
+                'group' => 'params',
+                'path' => 'configs/params.php',
+            ],
+            [
+                'group' => 'params',
+                'path' => 'configs/foo/bar/params.php',
+            ],
+            [
                 'group' => 'web',
                 'path' => 'configs/web.php',
             ],
@@ -274,10 +287,6 @@ class ComposerTestCase extends TestCase
             [
                 'group' => 'duplicate1',
                 'path' => 'vendor/foo/bar/configs/duplicate.php',
-            ],
-            [
-                'group' => 'params',
-                'path' => 'configs/foo/bar/params.php',
             ],
             [
                 'group' => 'foo/dev',

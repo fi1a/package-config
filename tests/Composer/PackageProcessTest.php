@@ -52,6 +52,6 @@ class PackageProcessTest extends ComposerTestCase
         $composer = $this->getComposerMock();
         $packageProcess = new PackageProcess($composer, $composer->getPackage());
         $configs = $packageProcess->getConfigs();
-        $this->assertCount(3, $configs);
+        $this->assertCount(4, $configs);
     }
 }
