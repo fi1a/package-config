@@ -88,7 +88,6 @@ class ComposerTestCase extends TestCase
      */
     protected function getComposerMock()
     {
-        $rootPath = $this->testDirectory;
         $sourcePath = $this->packagesDirectory;
         $targetPath = $this->testDirectory . '/vendor';
 
@@ -173,11 +172,7 @@ class ComposerTestCase extends TestCase
             ->getMock();
         $installationManager->method('getInstallPath')
             ->willReturnCallback(
-                static function (PackageInterface $package) use ($targetPath, $rootPath) {
-                    if ($package instanceof RootPackageInterface) {
-                        return $rootPath;
-                    }
-
+                static function (PackageInterface $package) use ($targetPath) {
                     return $targetPath . '/' . $package->getName();
                 }
             );
