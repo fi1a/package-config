@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fi1a\PackageConfig\Composer;
 
 use Composer\Composer;
+use Composer\Factory;
 use Composer\Package\CompletePackageInterface;
 use Fi1a\Filesystem\Adapters\LocalAdapter;
 use Fi1a\Filesystem\Filesystem;
@@ -51,9 +52,7 @@ class Service implements ServiceInterface
             throw new PackageNotFoundException(sprintf('Пакет "%s" не найден', $packageName));
         }
 
-        $rootPackage = $composer->getPackage();
-        $rootPackagePath = $composer->getInstallationManager()
-            ->getInstallPath($rootPackage);
+        $rootPackagePath = realpath(dirname(Factory::getComposerFile()));
         $packagePath = $composer->getInstallationManager()
             ->getInstallPath($package);
 

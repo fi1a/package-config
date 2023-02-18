@@ -76,18 +76,17 @@ class PackageProcess implements PackageProcessInterface
     {
         $configs = [];
 
-        $rootPackagePath = $this->composer->getInstallationManager()
-            ->getInstallPath($this->rootPackage);
-
         foreach ($this->getGroups() as $group => $fileName) {
             $path = null;
             if ($this->package->getName()) {
-                $path = $rootPackagePath . '/configs/' . $this->package->getName() . '/' . $fileName;
+                $path = $this->rootPath . '/configs/' . $this->package->getName() . '/' . $fileName;
             }
 
             if (!$path || !is_file($path)) {
-                $packagePath = $this->composer->getInstallationManager()
-                    ->getInstallPath($this->package);
+                $packagePath = $this->rootPackage === $this->package
+                    ? $this->rootPath
+                    : $this->composer->getInstallationManager()
+                        ->getInstallPath($this->package);
                 $path = $packagePath . '/configs/' . $fileName;
             }
 
