@@ -53,7 +53,7 @@ class FilesystemStorageAdapter implements StorageAdapterInterface
             return [];
         }
 
-        /** @var list<array{group: string, path: string}>|null $map */
+        /** @var list<array{group: string, path: string, sort: int}>|null $map */
         $map = json_decode($json, true);
 
         if (!is_array($map)) {

@@ -33,12 +33,18 @@ class PackageProcess implements PackageProcessInterface
      */
     protected $rootPackage;
 
-    public function __construct(Composer $composer, CompletePackageInterface $package)
+    /**
+     * @var int
+     */
+    protected $defaultSort;
+
+    public function __construct(Composer $composer, CompletePackageInterface $package, int $defaultSort = 500)
     {
         $this->composer = $composer;
         $this->package = $package;
         $this->rootPath = realpath(dirname(Factory::getComposerFile()));
         $this->rootPackage = $composer->getPackage();
+        $this->defaultSort = $defaultSort;
     }
 
     /**
@@ -55,15 +61,39 @@ class PackageProcess implements PackageProcessInterface
         $groups = [];
         /**
          * @var string $group
-         * @var string $fileName
+         * @var mixed $values
          */
-        foreach ($extra['package-config'] as $group => $fileName) {
-            $fileName = ltrim($fileName, '/');
-            if (!$group || !$fileName) {
+        foreach ($extra['package-config'] as $group => $values) {
+            if (!$group) {
                 continue;
             }
 
-            $groups[$group] = $fileName;
+            if (!is_array($values)) {
+                $values = [
+                    [
+                        'file' => $values,
+                    ],
+                ];
+            }
+
+            /** @var array{file: mixed|null, sort: mixed|null} $value */
+            foreach ($values as $value) {
+                if (!isset($value['file'])) {
+                    continue;
+                }
+
+                $fileName = ltrim((string) $value['file'], '/');
+
+                if (!$fileName) {
+                    continue;
+                }
+
+                $groups[] = [
+                    'group' => $group,
+                    'file' => $fileName,
+                    'sort' => isset($value['sort']) ? (int) $value['sort'] : $this->defaultSort,
+                ];
+            }
         }
 
         return $groups;
@@ -76,10 +106,10 @@ class PackageProcess implements PackageProcessInterface
     {
         $configs = [];
 
-        foreach ($this->getGroups() as $group => $fileName) {
+        foreach ($this->getGroups() as $value) {
             $path = null;
             if ($this->package->getName()) {
-                $path = $this->rootPath . '/configs/' . $this->package->getName() . '/' . $fileName;
+                $path = $this->rootPath . '/configs/' . $this->package->getName() . '/' . $value['file'];
             }
 
             if (!$path || !is_file($path)) {
@@ -87,7 +117,7 @@ class PackageProcess implements PackageProcessInterface
                     ? $this->rootPath
                     : $this->composer->getInstallationManager()
                         ->getInstallPath($this->package);
-                $path = $packagePath . '/configs/' . $fileName;
+                $path = $packagePath . '/configs/' . $value['file'];
             }
 
             if (mb_stripos($path, $this->rootPath) === 0) {
@@ -96,8 +126,9 @@ class PackageProcess implements PackageProcessInterface
             $path = ltrim($path, '/');
 
             $configs[] = [
-                'group' => $group,
+                'group' => $value['group'],
                 'path' => $path,
+                'sort' => $value['sort'],
             ];
         }
 

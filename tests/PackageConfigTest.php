@@ -22,23 +22,28 @@ class PackageConfigTest extends ComposerTestCase
         $map = Map::createFromArray([
             [
                 'group' => 'params',
+                'path' => 'tests/Fixtures/packages/configs/params.php',
+                'sort' => 1000,
+            ],
+            [
+                'group' => 'params',
                 'path' => 'tests/Fixtures/packages/vendor/foo/bar/configs/params.php',
+                'sort' => 500,
             ],
             [
                 'group' => 'web',
                 'path' => 'tests/Fixtures/packages/vendor/foo/bar/configs/web.php',
+                'sort' => 500,
             ],
             [
                 'group' => 'duplicate1',
                 'path' => 'tests/Fixtures/packages/vendor/foo/bar/configs/duplicate.php',
+                'sort' => 500,
             ],
             [
                 'group' => 'foo/dev',
                 'path' => 'tests/Fixtures/packages/vendor/foo/dev/configs/package.php',
-            ],
-            [
-                'group' => 'params',
-                'path' => 'tests/Fixtures/packages/configs/params.php',
+                'sort' => 500,
             ],
         ]);
 

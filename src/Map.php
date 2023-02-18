@@ -28,15 +28,13 @@ class Map implements MapInterface
     /**
      * @inheritDoc
      */
-    public function add(string $group, $path): bool
+    public function add(string $group, FileInterface $file): bool
     {
         if (!$group) {
             throw new InvalidArgumentException('Группа не может быть пустой');
         }
-
-        $filePath = $path instanceof FileInterface ? $path->getPath() : $path;
-        if ($this->groups->isPathExists($filePath)) {
-            throw new ErrorException(sprintf('Файл конфигурации %s уже добавлен', $filePath));
+        if ($this->groups->isPathExists($file->getPath())) {
+            throw new ErrorException(sprintf('Файл конфигурации %s уже добавлен', $file->getPath()));
         }
 
         if (!$this->groups->has($group)) {
@@ -45,7 +43,7 @@ class Map implements MapInterface
 
         /** @var FileCollectionInterface $groupCollection */
         $groupCollection = $this->groups->get($group);
-        $groupCollection[] = $path;
+        $groupCollection[] = $file;
 
         return true;
     }
@@ -60,8 +58,13 @@ class Map implements MapInterface
         }
         /** @var FileCollectionInterface $collection */
         $collection = $this->groups->get($group);
+        /** @var FileInterface[] $groupArray */
+        $groupArray = $collection->getArrayCopy();
+        usort($groupArray, function (FileInterface $a, FileInterface $b): int {
+            return $a->getSort() - $b->getSort();
+        });
 
-        return $collection;
+        return new FileCollection($groupArray);
     }
 
     /**
@@ -70,7 +73,7 @@ class Map implements MapInterface
     public function addArray(array $map): bool
     {
         foreach ($map as $item) {
-            $this->add($item['group'] ?? '', $item['path'] ?? '');
+            $this->add($item['group'] ?? '', new File($item['path'] ?? '', $item['sort'] ?? 500));
         }
 
         return true;
@@ -92,6 +95,7 @@ class Map implements MapInterface
                 $map[] = [
                     'group' => $group,
                     'path' => $file->getPath(),
+                    'sort' => $file->getSort(),
                 ];
             }
         }

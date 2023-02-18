@@ -10,16 +10,16 @@ namespace Fi1a\PackageConfig\Composer;
 interface PackageProcessInterface
 {
     /**
-     * Возвращает файлы конфигураций
-     *
-     * @return list<array{group: string, path: string}>
-     */
-    public function getConfigs(): array;
-
-    /**
      * Возвращает группы и названия файлов конфигураций
      *
-     * @return array<string, string>
+     * @return list<array{group: string, file: string, sort: int}>
      */
     public function getGroups(): array;
+
+    /**
+     * Возвращает файлы конфигураций
+     *
+     * @return list<array{group: string, path: string, sort: int}>
+     */
+    public function getConfigs(): array;
 }

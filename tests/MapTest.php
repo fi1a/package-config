@@ -6,6 +6,7 @@ namespace Fi1a\Unit\PackageConfig;
 
 use ErrorException;
 use Fi1a\PackageConfig\File;
+use Fi1a\PackageConfig\FileInterface;
 use Fi1a\PackageConfig\Map;
 use PHPUnit\Framework\TestCase;
 
@@ -21,9 +22,9 @@ class MapTest extends TestCase
     {
         $map = new Map();
 
-        $this->assertTrue($map->add('web', 'vendor/fi1a/foo/configs/web.php'));
-        $this->assertTrue($map->add('web', 'vendor/fi1a/foo/configs/web2.php'));
-        $this->assertTrue($map->add('fi1a/bar', new File('vendor/fi1a/bar/configs/package.php')));
+        $this->assertTrue($map->add('web', new File('vendor/fi1a/foo/configs/web.php', 500)));
+        $this->assertTrue($map->add('web', new File('vendor/fi1a/foo/configs/web2.php', 500)));
+        $this->assertTrue($map->add('fi1a/bar', new File('vendor/fi1a/bar/configs/package.php', 500)));
 
         $this->assertCount(2, $map->getGroup('web'));
         $this->assertCount(1, $map->getGroup('fi1a/bar'));
@@ -38,7 +39,7 @@ class MapTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $map = new Map();
-        $map->add('', 'vendor/fi1a/foo/configs/web.php');
+        $map->add('', new File('vendor/fi1a/foo/configs/web.php', 500));
     }
 
     /**
@@ -49,8 +50,8 @@ class MapTest extends TestCase
         $this->expectException(ErrorException::class);
 
         $map = new Map();
-        $this->assertTrue($map->add('web', 'vendor/fi1a/foo/configs/web.php'));
-        $this->assertTrue($map->add('fi1a/foo', 'vendor/fi1a/foo/configs/web.php'));
+        $this->assertTrue($map->add('web', new File('vendor/fi1a/foo/configs/web.php', 500)));
+        $this->assertTrue($map->add('fi1a/foo', new File('vendor/fi1a/foo/configs/web.php', 500)));
     }
 
     /**
@@ -62,18 +63,25 @@ class MapTest extends TestCase
             [
                 'group' => 'web',
                 'path' => 'vendor/fi1a/foo/configs/web.php',
+                'sort' => 500,
             ],
             [
                 'group' => 'web',
                 'path' => 'vendor/fi1a/foo/configs/web2.php',
+                'sort' => 1000,
             ],
             [
                 'group' => 'fi1a/bar',
                 'path' => 'vendor/fi1a/bar/configs/package.php',
+                'sort' => 500,
             ],
         ]);
 
-        $this->assertCount(2, $map->getGroup('web'));
+        /** @var FileInterface[] $web */
+        $web = $map->getGroup('web');
+        $this->assertCount(2, $web);
+        $this->assertEquals(500, $web[0]->getSort());
+        $this->assertEquals(1000, $web[1]->getSort());
         $this->assertCount(1, $map->getGroup('fi1a/bar'));
         $this->assertCount(0, $map->getGroup('notExists'));
     }
@@ -85,9 +93,9 @@ class MapTest extends TestCase
     {
         $map = new Map();
 
-        $this->assertTrue($map->add('web', 'vendor/fi1a/foo/configs/web.php'));
-        $this->assertTrue($map->add('web', 'vendor/fi1a/foo/configs/web2.php'));
-        $this->assertTrue($map->add('fi1a/bar', new File('vendor/fi1a/bar/configs/package.php')));
+        $this->assertTrue($map->add('web', new File('vendor/fi1a/foo/configs/web.php', 500)));
+        $this->assertTrue($map->add('web', new File('vendor/fi1a/foo/configs/web2.php', 1000)));
+        $this->assertTrue($map->add('fi1a/bar', new File('vendor/fi1a/bar/configs/package.php', 500)));
 
         $this->assertCount(3, $map->toArray());
         $this->assertEquals(
@@ -95,14 +103,17 @@ class MapTest extends TestCase
                 [
                     'group' => 'web',
                     'path' => 'vendor/fi1a/foo/configs/web.php',
+                    'sort' => 500,
                 ],
                 [
                     'group' => 'web',
                     'path' => 'vendor/fi1a/foo/configs/web2.php',
+                    'sort' => 1000,
                 ],
                 [
                     'group' => 'fi1a/bar',
                     'path' => 'vendor/fi1a/bar/configs/package.php',
+                    'sort' => 500,
                 ],
             ],
             $map->toArray()
