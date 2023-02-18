@@ -1,0 +1,9 @@
+{
+  "name": "foo/dev",
+  "version": "1.0.0",
+  "extra": {
+    "package-config": {
+      "foo/dev": "package.php"
+    }
+  }
+}

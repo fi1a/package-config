@@ -13,17 +13,23 @@
   ],
   "require": {
     "php": "^7.3 || ^8",
+    "ext-json": "*",
     "composer-plugin-api": "^2.0",
+    "fi1a/collection": "^2.0",
     "fi1a/config": "^2.1",
-    "fi1a/collection": "^2.0"
+    "fi1a/filesystem": "^1.0",
+    "fi1a/dependency-injection": "^1.0",
+    "fi1a/facade": "dev-master"
   },
   "require-dev": {
+    "captainhook/captainhook": "^5.4",
+    "composer/composer": "^2.0",
     "phpunit/phpunit": "^9.3",
     "slevomat/coding-standard": "^6.3",
     "squizlabs/php_codesniffer": "^3.5",
-    "vimeo/psalm": "^4.3",
-    "captainhook/captainhook": "^5.4"
+    "vimeo/psalm": "^4.3"
   },
+  "minimum-stability": "dev",
   "config": {
     "sort-packages": true,
     "allow-plugins": {
@@ -33,12 +39,18 @@
   "autoload": {
     "psr-4": {
       "Fi1a\\PackageConfig\\": "src"
-    }
+    },
+    "files": [
+      "src/configure.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
       "Fi1a\\Unit\\PackageConfig\\": "tests"
     }
+  },
+  "extra": {
+    "class": "Fi1a\\PackageConfig\\Composer\\Plugin"
   },
   "scripts": {
     "fl:lint": "phpcs --cache=runtime/cache/phpcs.cache",

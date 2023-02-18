@@ -22,9 +22,23 @@ interface MapInterface
     public function getGroup(string $group): FileCollectionInterface;
 
     /**
+     * Добавить файлы конфигурации из массива
+     *
+     * @param list<array{group: string, path: string}> $map
+     */
+    public function addArray(array $map): bool;
+
+    /**
+     * Файлы конфигурации в массив
+     *
+     * @return list<array{group: string, path: string}>
+     */
+    public function toArray(): array;
+
+    /**
      * Инициализация из массива
      *
-     * @param array<string, array<string, string>> $map
+     * @param list<array{group: string, path: string}> $map
      */
-    public static function fromArray(array $map): MapInterface;
+    public static function createFromArray(array $map): MapInterface;
 }
