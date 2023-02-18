@@ -19,10 +19,8 @@ class ServiceTest extends ComposerTestCase
      */
     public function testPublish()
     {
-        $this->assertCount(
-            1,
-            ServiceFacade::publish($this->getComposerMock(), 'foo/bar')
-        );
+        $publish = ServiceFacade::publish($this->getComposerMock(), 'foo/bar');
+        $this->assertCount(3, $publish);
         $this->assertPublishedFooBarMapFile();
     }
 

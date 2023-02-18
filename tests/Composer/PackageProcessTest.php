@@ -29,7 +29,7 @@ class PackageProcessTest extends ComposerTestCase
         )['extra']);
         $packageProcess = new PackageProcess($this->getComposerMock(), $package);
         $configs = $packageProcess->getConfigs();
-        $this->assertCount(4, $configs);
+        $this->assertCount(6, $configs);
     }
 
     /**

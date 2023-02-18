@@ -20,10 +20,21 @@ class GroupCollectionTest extends TestCase
     {
         $collection = new GroupCollection();
         $collection[] = new FileCollection([
-            'vendor/fi1a/foo/configs/web.php',
-            'vendor/fi1a/foo/configs/web2.php',
+            [
+                'file' => 'vendor/fi1a/foo/configs/web.php',
+            ],
+            [
+                'file' => 'vendor/fi1a/foo/configs/web2.php',
+            ],
         ]);
-        $collection[] = ['vendor/fi1a/foo/configs/web.php', 'vendor/fi1a/foo/configs/web2.php'];
+        $collection[] = [
+            [
+                'file' => 'vendor/fi1a/foo/configs/web.php',
+            ],
+            [
+                'file' => 'vendor/fi1a/foo/configs/web2.php',
+            ],
+        ];
         $this->assertCount(2, $collection);
     }
 }

@@ -16,13 +16,21 @@ class File implements FileInterface
      */
     protected $path;
 
-    public function __construct(string $path)
+    /**
+     * @var int
+     */
+    protected $sort;
+
+    public function __construct(string $path, ?int $sort)
     {
         if (!$path) {
             throw new InvalidArgumentException('Не передан путь к конфигурационному файлу');
         }
-
+        if ($sort === null) {
+            $sort = 500;
+        }
         $this->path = $path;
+        $this->sort = $sort;
     }
 
     /**
@@ -31,5 +39,13 @@ class File implements FileInterface
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSort(): int
+    {
+        return $this->sort;
     }
 }

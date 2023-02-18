@@ -13,4 +13,9 @@ interface FileInterface
      * Возврашает путь до файла
      */
     public function getPath(): string;
+
+    /**
+     * Возвращает сортировку
+     */
+    public function getSort(): int;
 }

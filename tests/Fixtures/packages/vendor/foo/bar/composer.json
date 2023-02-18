@@ -8,7 +8,22 @@
       "duplicate1": "duplicate.php",
       "duplicate2": "duplicate.php",
       "": "empty-group.php",
-      "empty-file": ""
+      "empty-file": "",
+      "with-sort": [
+          {
+            "sort": 1000,
+            "file": "with-sort2.php"
+          },
+          {
+            "sort": 900,
+            "file": "with-sort1.php"
+          }
+      ],
+      "without-file": [
+        {
+          "sort": 1000
+        }
+      ]
     }
   }
 }

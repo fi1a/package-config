@@ -36,7 +36,7 @@ class Process implements ProcessInterface
             ->getLocalRepository()
             ->getPackages();
 
-        $process = new PackageProcess($this->composer, $this->composer->getPackage());
+        $process = new PackageProcess($this->composer, $this->composer->getPackage(), 1000);
 
         try {
             $map->addArray($process->getConfigs());
@@ -48,7 +48,7 @@ class Process implements ProcessInterface
                 continue;
             }
 
-            $process = new PackageProcess($this->composer, $package);
+            $process = new PackageProcess($this->composer, $package, 500);
 
             try {
                 $map->addArray($process->getConfigs());

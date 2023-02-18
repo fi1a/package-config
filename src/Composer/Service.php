@@ -61,20 +61,20 @@ class Service implements ServiceInterface
         $packageProcess = new PackageProcess($composer, $package);
         $groups = $packageProcess->getGroups();
         if (!count($files)) {
-            foreach ($groups as $fileName) {
-                $files[] = $fileName;
+            foreach ($groups as $value) {
+                $files[] = $value['file'];
             }
         }
 
         $published = [];
 
         foreach ($files as $fileName) {
-            foreach ($groups as $groupFileName) {
-                if ($groupFileName !== $fileName) {
+            foreach ($groups as $value) {
+                if ($value['file'] !== $fileName) {
                     continue;
                 }
                 $rootFilePath = $rootPackagePath . '/configs/' . $package->getName() . '/' . $fileName;
-                $file = $filesystem->factoryFile($packagePath . '/configs/' . $groupFileName);
+                $file = $filesystem->factoryFile($packagePath . '/configs/' . $value['file']);
                 if (!$file->isExist() || $filesystem->isFileExist($rootFilePath)) {
                     continue;
                 }

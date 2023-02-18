@@ -18,8 +18,18 @@ class FileTest extends TestCase
      */
     public function testPath(): void
     {
-        $file = new File('vendor/fi1a/foo/configs/web.php');
+        $file = new File('vendor/fi1a/foo/configs/web.php', 500);
         $this->assertEquals('vendor/fi1a/foo/configs/web.php', $file->getPath());
+        $this->assertEquals(500, $file->getSort());
+    }
+
+    /**
+     * Сортировка
+     */
+    public function testSort(): void
+    {
+        $file = new File('vendor/fi1a/foo/configs/web.php', 200);
+        $this->assertEquals(200, $file->getSort());
     }
 
     /**
@@ -28,6 +38,6 @@ class FileTest extends TestCase
     public function testPathException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new File('');
+        new File('', 500);
     }
 }

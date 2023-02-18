@@ -221,30 +221,37 @@ class ComposerTestCase extends TestCase
             [
                 'group' => 'params',
                 'path' => 'configs/params.php',
+                'sort' => 1000,
             ],
             [
                 'group' => 'params',
                 'path' => 'configs/foo/bar/params.php',
+                'sort' => 500,
             ],
             [
                 'group' => 'web',
                 'path' => 'configs/web.php',
+                'sort' => 1000,
             ],
             [
                 'group' => 'web',
                 'path' => 'configs/foo/bar/web.php',
+                'sort' => 500,
             ],
             [
                 'group' => 'duplicate1',
                 'path' => 'configs/duplicate.php',
+                'sort' => 1000,
             ],
             [
                 'group' => 'duplicate1',
                 'path' => 'vendor/foo/bar/configs/duplicate.php',
+                'sort' => 500,
             ],
             [
                 'group' => 'foo/dev',
                 'path' => 'vendor/foo/dev/configs/package.php',
+                'sort' => 500,
             ],
         ], $map);
     }
@@ -262,30 +269,37 @@ class ComposerTestCase extends TestCase
             [
                 'group' => 'params',
                 'path' => 'configs/params.php',
+                'sort' => 1000,
             ],
             [
                 'group' => 'params',
                 'path' => 'configs/foo/bar/params.php',
+                'sort' => 500,
             ],
             [
                 'group' => 'web',
                 'path' => 'configs/web.php',
+                'sort' => 1000,
             ],
             [
                 'group' => 'web',
                 'path' => 'vendor/foo/bar/configs/web.php',
+                'sort' => 500,
             ],
             [
                 'group' => 'duplicate1',
                 'path' => 'configs/duplicate.php',
+                'sort' => 1000,
             ],
             [
                 'group' => 'duplicate1',
                 'path' => 'vendor/foo/bar/configs/duplicate.php',
+                'sort' => 500,
             ],
             [
                 'group' => 'foo/dev',
                 'path' => 'vendor/foo/dev/configs/package.php',
+                'sort' => 500,
             ],
         ], $map);
     }

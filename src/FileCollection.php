@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fi1a\PackageConfig;
 
 use Fi1a\Collection\AbstractInstanceCollection;
+use InvalidArgumentException;
 
 /**
  * Коллекция файлов
@@ -16,7 +17,11 @@ class FileCollection extends AbstractInstanceCollection implements FileCollectio
      */
     protected function factory($key, $value)
     {
-        return new File((string) $value);
+        if (!is_array($value) || !isset($value['file'])) {
+            throw new InvalidArgumentException('Ошибка в аргументах файла');
+        }
+
+        return new File((string) $value['file'], isset($value['sort']) ? (int) $value['sort'] : null);
     }
 
     /**

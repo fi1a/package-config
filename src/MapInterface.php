@@ -11,10 +11,8 @@ interface MapInterface
 {
     /**
      * Добавить файл конфигурации
-     *
-     * @param string|FileInterface $path
      */
-    public function add(string $group, $path): bool;
+    public function add(string $group, FileInterface $file): bool;
 
     /**
      * Возвращает файлы конфигурации для группы
@@ -24,21 +22,21 @@ interface MapInterface
     /**
      * Добавить файлы конфигурации из массива
      *
-     * @param list<array{group: string, path: string}> $map
+     * @param list<array{group: string, path: string, sort: int}> $map
      */
     public function addArray(array $map): bool;
 
     /**
      * Файлы конфигурации в массив
      *
-     * @return list<array{group: string, path: string}>
+     * @return list<array{group: string, path: string, sort: int}>
      */
     public function toArray(): array;
 
     /**
      * Инициализация из массива
      *
-     * @param list<array{group: string, path: string}> $map
+     * @param list<array{group: string, path: string, sort: int}> $map
      */
     public static function createFromArray(array $map): MapInterface;
 }

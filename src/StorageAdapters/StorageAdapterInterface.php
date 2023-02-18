@@ -12,14 +12,14 @@ interface StorageAdapterInterface
     /**
      * Запись
      *
-     * @param list<array{group: string, path: string}> $map
+     * @param list<array{group: string, path: string, sort: int}> $map
      */
     public function write(array $map): bool;
 
     /**
      * Чтение
      *
-     * @return list<array{group: string, path: string}>
+     * @return list<array{group: string, path: string, sort: int}>
      */
     public function read(): array;
 }
