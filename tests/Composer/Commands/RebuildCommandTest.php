@@ -9,14 +9,23 @@ use Fi1a\PackageConfig\Composer\Commands\RebuildCommand;
 use Fi1a\Unit\PackageConfig\TestCases\ComposerTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * Выполняет обход всех установленных пакетов и обновляет карту файлов конфигурации
+ */
 class RebuildCommandTest extends ComposerTestCase
 {
+    /**
+     * Выполнение команды
+     */
     public function testRebuild(): void
     {
         $this->executeCommand();
         $this->assertMapFile();
     }
 
+    /**
+     * Выполнить команду
+     */
     protected function executeCommand(): void
     {
         $command = new RebuildCommand();

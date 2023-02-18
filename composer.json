@@ -18,7 +18,8 @@
     "fi1a/collection": "^2.0",
     "fi1a/config": "^2.1",
     "fi1a/filesystem": "^1.0",
-    "fi1a/dependency-injection": "^1.0"
+    "fi1a/dependency-injection": "^1.0",
+    "fi1a/facade": "dev-master"
   },
   "require-dev": {
     "captainhook/captainhook": "^5.4",

@@ -38,11 +38,6 @@ class ComposerTestCase extends TestCase
      */
     protected $testDirectory;
 
-    /**
-     * @var string
-     */
-    protected $configDirectory;
-
     protected $filesystem;
 
     /**
@@ -54,7 +49,6 @@ class ComposerTestCase extends TestCase
 
         $this->packagesDirectory = realpath(__DIR__ . '/../Fixtures/packages/vendor');
         $this->testDirectory =  realpath(__DIR__ . '/../../runtime/tests');
-        $this->configDirectory = $this->testDirectory . '/config';
 
         $this->filesystem = new Filesystem(new LocalAdapter(__DIR__ . '/../..'));
     }
@@ -70,7 +64,6 @@ class ComposerTestCase extends TestCase
 
     protected function setUp(): void
     {
-        $this->filesystem->factoryFolder($this->configDirectory)->make();
         $this->filesystem->factoryFolder(__DIR__ . '/../Fixtures/packages')
             ->copy(__DIR__ . '/../../runtime/tests');
         putenv("COMPOSER=$this->testDirectory/composer.json");
@@ -217,6 +210,43 @@ class ComposerTestCase extends TestCase
             ->willReturn($eventDispatcher);
 
         return $composer;
+    }
+
+    /**
+     * Проверка созданной карты файлов после публикауии
+     */
+    protected function assertPublishedFooBarMapFile(): void
+    {
+        /** @var StorageAdapterInterface $adapter */
+        $adapter = di()->get(StorageAdapterInterface::class);
+        $map = $adapter->read();
+
+        $this->assertEquals([
+            [
+                'group' => 'web',
+                'path' => 'configs/web.php',
+            ],
+            [
+                'group' => 'web',
+                'path' => 'configs/foo/bar/web.php',
+            ],
+            [
+                'group' => 'duplicate1',
+                'path' => 'configs/duplicate.php',
+            ],
+            [
+                'group' => 'duplicate1',
+                'path' => 'vendor/foo/bar/configs/duplicate.php',
+            ],
+            [
+                'group' => 'params',
+                'path' => 'configs/foo/bar/params.php',
+            ],
+            [
+                'group' => 'foo/dev',
+                'path' => 'vendor/foo/dev/configs/package.php',
+            ],
+        ], $map);
     }
 
     /**

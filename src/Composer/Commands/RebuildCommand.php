@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Fi1a\PackageConfig\Composer\Commands;
 
 use Composer\Command\BaseCommand;
-use Composer\Composer;
-use Fi1a\PackageConfig\Composer\Process;
-use Fi1a\PackageConfig\StorageAdapters\StorageAdapterInterface;
+use Fi1a\PackageConfig\Composer\Facades\ServiceFacade;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -31,12 +29,8 @@ class RebuildCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var Composer $composer */
-        $composer = $this->tryComposer();
-        /** @var StorageAdapterInterface $adapter */
-        $adapter = di()->get(StorageAdapterInterface::class);
-        $process = new Process($composer);
-        $adapter->write($process->process()->toArray());
+        ServiceFacade::process($this->requireComposer());
+        $output->writeln('<fg=green>Карта файлов конфигурации обновлена</>');
 
         return 0;
     }

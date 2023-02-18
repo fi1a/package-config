@@ -15,4 +15,11 @@ interface PackageProcessInterface
      * @return list<array{group: string, path: string}>
      */
     public function getConfigs(): array;
+
+    /**
+     * Возвращает группы и названия файлов конфигураций
+     *
+     * @return array<string, string>
+     */
+    public function getGroups(): array;
 }

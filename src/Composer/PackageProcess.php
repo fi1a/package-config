@@ -44,19 +44,15 @@ class PackageProcess implements PackageProcessInterface
     /**
      * @inheritDoc
      */
-    public function getConfigs(): array
+    public function getGroups(): array
     {
-        $configs = [];
-
         $extra = $this->package->getExtra();
 
         if (!isset($extra['package-config']) || !is_array($extra['package-config'])) {
-            return $configs;
+            return [];
         }
 
-        $rootPackagePath = $this->composer->getInstallationManager()
-            ->getInstallPath($this->rootPackage);
-
+        $groups = [];
         /**
          * @var string $group
          * @var string $fileName
@@ -67,6 +63,23 @@ class PackageProcess implements PackageProcessInterface
                 continue;
             }
 
+            $groups[$group] = $fileName;
+        }
+
+        return $groups;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getConfigs(): array
+    {
+        $configs = [];
+
+        $rootPackagePath = $this->composer->getInstallationManager()
+            ->getInstallPath($this->rootPackage);
+
+        foreach ($this->getGroups() as $group => $fileName) {
             $path = null;
             if ($this->package->getName()) {
                 $path = $rootPackagePath . '/configs/' . $this->package->getName() . '/' . $fileName;

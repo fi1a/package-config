@@ -18,6 +18,7 @@ class CommandProvider implements ComposerCommandProvider
     {
         return [
             new RebuildCommand(),
+            new PublishCommand(),
         ];
     }
 }
